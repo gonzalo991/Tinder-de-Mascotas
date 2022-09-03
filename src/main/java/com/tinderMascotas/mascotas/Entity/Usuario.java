@@ -2,28 +2,33 @@ package com.tinderMascotas.mascotas.Entity;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class Usuario {
+
     @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
     private String nombre;
     private String apellido;
     private String mail;
     private String clave;
-    
+
     /*El usuario pertenece a una zona, pero la zona puede contener
     varios usuarios*/
     @ManyToOne
     private Zona zona;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date alta;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date baja;
 
@@ -138,6 +143,5 @@ public class Usuario {
     public void setZona(Zona zona) {
         this.zona = zona;
     }
-    
-    
+
 }
