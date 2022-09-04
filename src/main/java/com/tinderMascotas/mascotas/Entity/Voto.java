@@ -11,6 +11,34 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class Voto {
+
+    /**
+     * @return the mascota1
+     */
+    public Mascota getMascota1() {
+        return mascota1;
+    }
+
+    /**
+     * @param mascota1 the mascota1 to set
+     */
+    public void setMascota1(Mascota mascota1) {
+        this.mascota1 = mascota1;
+    }
+
+    /**
+     * @return the mascota2
+     */
+    public Mascota getMascota2() {
+        return mascota2;
+    }
+
+    /**
+     * @param mascota2 the mascota2 to set
+     */
+    public void setMascota2(Mascota mascota2) {
+        this.mascota2 = mascota2;
+    }
    
     @Id
     @GeneratedValue(generator = "uuid")

@@ -1,12 +1,15 @@
 package com.tinderMascotas.mascotas.Servicios;
 
+import com.tinderMascotas.mascotas.Entity.Foto;
 import com.tinderMascotas.mascotas.Entity.Usuario;
 import com.tinderMascotas.mascotas.Errors.ErrorService;
 import com.tinderMascotas.mascotas.Respository.UsuarioRepository;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UsuarioService {
@@ -14,7 +17,10 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
-    public void registrar(String nombre, String apellido, String mail, String clave) throws ErrorService {
+    @Autowired
+    private FotoService fotoService;
+    
+    public void registrar(MultipartFile archivo, String nombre, String apellido, String mail, String clave) throws ErrorService, IOException {
         
         validar(nombre, apellido, mail, clave);
         
@@ -25,10 +31,14 @@ public class UsuarioService {
         usuario.setClave(clave);
         usuario.setAlta(new Date());
         
+        Foto foto = fotoService.guardar(archivo);
+        usuario.setFoto(foto);
+        
         usuarioRepository.save(usuario);
+        
     }
     
-    public void modificar(String id, String nombre, String apellido, String mail, String clave) throws ErrorService {
+    public void modificar(MultipartFile archivo, String id, String nombre, String apellido, String mail, String clave) throws ErrorService {
         
         validar(nombre, apellido, mail, clave);
         
@@ -40,9 +50,15 @@ public class UsuarioService {
             usuario.setMail(mail);
             usuario.setClave(clave);
             
+            String idFoto = null;
+            if (usuario.getFoto() != null) {
+                idFoto = usuario.getFoto().getId();
+            }
+            Foto foto = fotoService.actualizar(idFoto, archivo);
+            usuario.setFoto(foto);
             usuarioRepository.save(usuario);
         } else {
-            throw new ErrorService("No se encontró el usuario");
+            throw new ErrorService("No se encontró el usuario solicitado");
         }
     }
     
