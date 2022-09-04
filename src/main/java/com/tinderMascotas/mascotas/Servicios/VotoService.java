@@ -17,7 +17,7 @@ public class VotoService {
     private MascotaRepository mascotaRepository;
 
     @Autowired
-    VotoRepository votoRepository;
+    private VotoRepository votoRepository;
 
     public void votar(String idUsuario, String idMascota1, String idMascota2) throws ErrorService {
         Voto voto = new Voto();

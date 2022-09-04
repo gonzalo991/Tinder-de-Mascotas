@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MascotaRepository extends JpaRepository<Mascota, String> {
 
-    @Query("SELECT C FROM Mascota c WHERE c.usuario.id = :id")
+    @Query("SELECT c FROM Mascota c WHERE c.usuario.id = :id")
     public List<Mascota> buscarMascotaPorUsuario(@Param("id") String id);
 
 }
