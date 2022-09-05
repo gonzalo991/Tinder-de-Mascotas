@@ -10,6 +10,7 @@ import com.tinderMascotas.mascotas.Respository.UsuarioRepository;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ public class MascotaService {
     @Autowired
     private FotoService fotoService;
 
+    @Transactional
     public void agregarMascota(MultipartFile archivo, String idUsuario, String nombre, Genero genero) throws ErrorService, IOException {
         Usuario usaurio = usuarioRepository.findById(idUsuario).get();
 
@@ -41,6 +43,7 @@ public class MascotaService {
         mascotaRepository.save(mascota);
     }
 
+    @Transactional
     public void modificar(MultipartFile archivo, String idUsuario, String idMascota, String nombre, Genero genero) throws ErrorService {
         validar(nombre, genero);
 
@@ -68,6 +71,7 @@ public class MascotaService {
         }
     }
 
+    @Transactional
     public void eliminar(String idUsuario, String idMascota) throws ErrorService {
         Optional<Mascota> respuesta = mascotaRepository.findById(idMascota);
         if (respuesta.isPresent()) {

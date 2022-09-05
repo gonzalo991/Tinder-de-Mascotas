@@ -19,6 +19,9 @@ public class VotoService {
     @Autowired
     private VotoRepository votoRepository;
 
+    @Autowired
+    private NotificacionService notificacionService;
+
     public void votar(String idUsuario, String idMascota1, String idMascota2) throws ErrorService {
         Voto voto = new Voto();
         voto.setFecha(new Date());
@@ -43,6 +46,8 @@ public class VotoService {
         if (respuesta2.isPresent()) {
             Mascota mascota2 = respuesta2.get();
             voto.setMascota2(mascota2);
+
+            notificacionService.enviar("Tu mascota ha sido votada", "Tinder de Mascotas", mascota2.getUsuario().getMail());
         } else {
             throw new ErrorService("No existe una mascota vinculada a ese identificador");
 
@@ -58,8 +63,10 @@ public class VotoService {
             voto.setRespuesta(new Date());
 
             if (voto.getMascota2().getUsuario().getId().equals(idUsuario)) {
+                notificacionService.enviar("Tu voto fue correspondido", "Tinder de Mascotas", voto.getMascota1().getUsuario().getMail());
+
                 votoRepository.save(voto);
-            }else {
+            } else {
                 throw new ErrorService("No tiene permisos para realizar la operación");
             }
         } else {

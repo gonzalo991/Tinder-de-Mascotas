@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,11 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private FotoService fotoService;
+    
+    @Autowired
+    private NotificacionService notificacionService;
 
+    @Transactional
     public void registrar(MultipartFile archivo, String nombre, String apellido, String mail, String clave) throws ErrorService, IOException {
 
         validar(nombre, apellido, mail, clave);
@@ -46,9 +51,12 @@ public class UsuarioService implements UserDetailsService {
         usuario.setFoto(foto);
 
         usuarioRepository.save(usuario);
+        
+        notificacionService.enviar("Bienvenido al Tinder de Mascotas", "Tinder de Mascotas", usuario.getMail());
 
     }
 
+    @Transactional
     public void modificar(MultipartFile archivo, String id, String nombre, String apellido, String mail, String clave) throws ErrorService {
 
         validar(nombre, apellido, mail, clave);
@@ -74,6 +82,7 @@ public class UsuarioService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public void deshabilitar(String id) throws ErrorService {
         Optional<Usuario> respuesta = usuarioRepository.findById(id);
         if (respuesta.isPresent()) {
@@ -85,6 +94,7 @@ public class UsuarioService implements UserDetailsService {
         }
     }
 
+    @Transactional
     public void habilitar(String id) throws ErrorService {
         Optional<Usuario> respuesta = usuarioRepository.findById(id);
         if (respuesta.isPresent()) {

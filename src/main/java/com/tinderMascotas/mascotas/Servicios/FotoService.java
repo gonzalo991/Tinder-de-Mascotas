@@ -5,6 +5,7 @@ import com.tinderMascotas.mascotas.Errors.ErrorService;
 import com.tinderMascotas.mascotas.Respository.FotoRepository;
 import java.io.IOException;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ public class FotoService {
     @Autowired
     private FotoRepository fotoRepository;
 
+    @Transactional
     public Foto guardar(MultipartFile archivo) throws ErrorService, IOException {
 
         if (archivo != null) {
@@ -33,6 +35,7 @@ public class FotoService {
 
     }
 
+    @Transactional
     public Foto actualizar(String idFoto, MultipartFile archivo) throws ErrorService {
         if (archivo != null) {
             try {
