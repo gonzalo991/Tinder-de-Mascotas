@@ -2,8 +2,10 @@ package com.tinderMascotas.mascotas.Servicios;
 
 import com.tinderMascotas.mascotas.Entity.Foto;
 import com.tinderMascotas.mascotas.Entity.Usuario;
+import com.tinderMascotas.mascotas.Entity.Zona;
 import com.tinderMascotas.mascotas.Errors.ErrorService;
 import com.tinderMascotas.mascotas.Respository.UsuarioRepository;
+import com.tinderMascotas.mascotas.Respository.ZonaRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,19 +31,25 @@ public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private FotoService fotoService;
-    
+
+    @Autowired
+    private ZonaRepository zonaRepository;
+
     @Autowired
     private NotificacionService notificacionService;
 
     @Transactional
-    public void registrar(MultipartFile archivo, String nombre, String apellido, String mail, String clave) throws ErrorService, IOException {
+    public void registrar(MultipartFile archivo, String nombre, String apellido, String mail, String clave, String clave2, String idZona) throws ErrorService, IOException {
 
-        validar(nombre, apellido, mail, clave);
+        Zona zona = zonaRepository.findById(idZona).get();
+        
+        validar(nombre, apellido, mail, clave, clave2, zona);
 
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setMail(mail);
+        usuario.setZona(zona);
 
         String encClave = new BCryptPasswordEncoder().encode(clave);
         usuario.setClave(encClave);
@@ -51,15 +59,16 @@ public class UsuarioService implements UserDetailsService {
         usuario.setFoto(foto);
 
         usuarioRepository.save(usuario);
-        
-     //   notificacionService.enviar("Bienvenido al Tinder de Mascotas", "Tinder de Mascotas", usuario.getMail());
 
+        //   notificacionService.enviar("Bienvenido al Tinder de Mascotas", "Tinder de Mascotas", usuario.getMail());
     }
 
     @Transactional
-    public void modificar(MultipartFile archivo, String id, String nombre, String apellido, String mail, String clave) throws ErrorService {
+    public void modificar(MultipartFile archivo, String id, String nombre, String apellido, String mail, String clave, String clave2, String idZona) throws ErrorService {
 
-        validar(nombre, apellido, mail, clave);
+        Zona zona = zonaRepository.findById(idZona).get();
+        
+        validar(nombre, apellido, mail, clave, clave2,zona);
 
         Optional<Usuario> respuesta = usuarioRepository.findById(id);
         if (respuesta.isPresent()) {
@@ -67,6 +76,7 @@ public class UsuarioService implements UserDetailsService {
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
             usuario.setMail(mail);
+            usuario.setZona(zona);
             String encClave = new BCryptPasswordEncoder().encode(clave);
             usuario.setClave(encClave);
 
@@ -106,7 +116,7 @@ public class UsuarioService implements UserDetailsService {
         }
     }
 
-    public void validar(String nombre, String apellido, String mail, String clave) throws ErrorService {
+    public void validar(String nombre, String apellido, String mail, String clave, String clave2, Zona zona) throws ErrorService {
 
         if (nombre == null || nombre.isEmpty()) {
             throw new ErrorService("El nombre del Usuario no puede ser nulo");
@@ -122,6 +132,14 @@ public class UsuarioService implements UserDetailsService {
 
         if (clave == null || clave.isEmpty() || clave.length() <= 6) {
             throw new ErrorService("La clave no puede ser nula o menor a 6 caracteres");
+        }
+
+        if (!clave.equals(clave2)) {
+            throw new ErrorService("Las claves deben ser iguales");
+        }
+
+        if (zona == null) {
+            throw new ErrorService("No se encontró la zona ingresada");
         }
     }
 
