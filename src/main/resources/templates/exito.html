@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -68,8 +68,8 @@
         </div>
         <div class="col-lg-6 order-lg-1">
           <div class="p-5">
-            <h2 class="display-4" ></h2>
-            <p ></p>
+            <h2 class="display-4" th:text="${titulo}" ></h2>
+            <p th:text="${descripcion}"></p>
           </div>
       </div>
     </div>

@@ -52,7 +52,7 @@ public class UsuarioService implements UserDetailsService {
 
         usuarioRepository.save(usuario);
         
-        notificacionService.enviar("Bienvenido al Tinder de Mascotas", "Tinder de Mascotas", usuario.getMail());
+     //   notificacionService.enviar("Bienvenido al Tinder de Mascotas", "Tinder de Mascotas", usuario.getMail());
 
     }
 
